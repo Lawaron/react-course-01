@@ -1,0 +1,21 @@
+x-node-config: &node-config
+  image: node:22-alpine
+  user: "${HOST_UID}:${HOST_GID}"
+  volumes:
+    - ../app:/app
+  working_dir: /app
+  tty: true
+  stdin_open: true
+
+services:
+  npm:
+    <<: *node-config
+    container_name: npm-cli
+    entrypoint:
+      - npm
+
+  npx:
+    <<: *node-config
+    container_name: npx-cli
+    entrypoint:
+      - npx
