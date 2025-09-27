@@ -6,6 +6,9 @@ x-node-config: &node-config
   working_dir: /app
   tty: true
   stdin_open: true
+  init: true
+  environment:
+    NODE_ENV: development
 
 services:
   npm:
@@ -13,6 +16,11 @@ services:
     container_name: npm-cli
     entrypoint:
       - npm
+    environment:
+      - WEBPACK_DEV_SERVER_WEBPACK_OPTIONS=${WEBPACK_DEV_SERVER_WEBPACK_OPTIONS}
+      - WDS_SOCKET_PORT=${WDS_SOCKET_PORT}
+      - HOST=${HOST}
+      - CHOKIDAR_INTERVAL=${CHOKIDAR_INTERVAL}
 
   npx:
     <<: *node-config
