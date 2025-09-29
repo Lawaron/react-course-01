@@ -1,4 +1,4 @@
-import { pizzaData } from "./data";
+import { pizzaData as pizzas } from "./data";
 
 export const App = () => (
   <div className="container">
@@ -14,22 +14,24 @@ const Header = () => (
   </header>
 );
 
-const Menu = () => (
-  <main className="menu">
-    <h2>Our menu</h2>
-    <ul className="pizzas">
-      {pizzaData.map((pizza) => (
-        <Pizza pizza={pizza} key={pizza.name} />
-      ))}
-    </ul>
-    {/* <Pizza
-      name="Pizza Spinaci"
-      ingredients="Tomato, mozarella, spinach, and ricotta cheese"
-      photoName="pizzas/focaccia.jpg"
-      price={12}
-    /> */}
-  </main>
-);
+const Menu = () => {
+  const hasPizzas = pizzas.length > 0;
+
+  return (
+    <main className="menu">
+      <h2>Our menu</h2>
+      {hasPizzas > 0 ? (
+        <ul className="pizzas">
+          {pizzas.map((pizza) => (
+            <Pizza pizza={pizza} key={pizza.name} />
+          ))}
+        </ul>
+      ) : (
+        <p>We're still working on our menu. Plese come back later! :)</p>
+      )}
+    </main>
+  );
+};
 
 const Pizza = ({ pizza }) => (
   <li className="pizza">
@@ -43,13 +45,26 @@ const Pizza = ({ pizza }) => (
 );
 
 const Footer = () => {
-  // const hour = new Date().getHours();
-  // const openHour = 11;
-  // const closeHour = 22;
-  // const isOpen = openHour <= hour && hour <= closeHour;
+  const hour = new Date().getHours();
+  const openHour = 11;
+  const closeHour = 19;
+  const isOpen = hour >= openHour && hour < closeHour;
+
   return (
     <footer className="footer">
-      {new Date().toLocaleDateString()} We're currently open!
+      {isOpen ? (
+        <div className="order">
+          <p>
+            We're currently open until {closeHour}:00. Come visit us or order
+            online!
+          </p>
+          <button className="btn">Order</button>
+        </div>
+      ) : (
+        <p>
+          We're happy to welcome you between {openHour}:00 and {closeHour}:00.
+        </p>
+      )}
     </footer>
   );
 };
