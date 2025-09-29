@@ -33,21 +33,25 @@ const Menu = () => {
   );
 };
 
-const Pizza = ({ pizza }) => (
-  <li className="pizza">
-    <img src={pizza.photoName} alt={pizza.name} />
-    <div>
-      <h3>{pizza.name}</h3>
-      <p>{pizza.ingredients}</p>
-      <span>{pizza.price + 3}$</span>
-    </div>
-  </li>
-);
+const Pizza = ({ pizza }) => {
+  if (pizza.soldOut) return null;
+
+  return (
+    <li className="pizza">
+      <img src={pizza.photoName} alt={pizza.name} />
+      <div>
+        <h3>{pizza.name}</h3>
+        <p>{pizza.ingredients}</p>
+        <span>{pizza.price + 3}$</span>
+      </div>
+    </li>
+  );
+};
 
 const Footer = () => {
   const hour = new Date().getHours();
   const openHour = 11;
-  const closeHour = 19;
+  const closeHour = 22;
   const isOpen = hour >= openHour && hour < closeHour;
 
   return (
