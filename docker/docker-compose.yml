@@ -15,7 +15,7 @@ services:
     entrypoint:
       - npm
     env_file:
-      - .env.npm
+      - node/.env
 
   npx:
     <<: *node-config
