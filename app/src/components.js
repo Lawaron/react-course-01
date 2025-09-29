@@ -39,22 +39,16 @@ const Menu = () => {
   );
 };
 
-const Pizza = ({ pizza }) => {
-  if (pizza.soldOut) return null;
-
-  const { photoName, name, ingredients, price } = pizza;
-
-  return (
-    <li className="pizza">
-      <img src={photoName} alt={name} />
-      <div>
-        <h3>{name}</h3>
-        <p>{ingredients}</p>
-        <span>{price + 3}$</span>
-      </div>
-    </li>
-  );
-};
+const Pizza = ({ pizza: { photoName, name, ingredients, price, soldOut } }) => (
+  <li className={`pizza ${soldOut ? "sold-out" : ""}`}>
+    <img src={photoName} alt={name} />
+    <div>
+      <h3>{name}</h3>
+      <p>{ingredients}</p>
+      <span>{soldOut ? `SOLD OUT` : `${price + 3}$`}</span>
+    </div>
+  </li>
+);
 
 const Footer = () => {
   const hour = new Date().getHours();
