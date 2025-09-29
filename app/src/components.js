@@ -36,13 +36,15 @@ const Menu = () => {
 const Pizza = ({ pizza }) => {
   if (pizza.soldOut) return null;
 
+  const { photoName, name, ingredients, price } = pizza;
+
   return (
     <li className="pizza">
-      <img src={pizza.photoName} alt={pizza.name} />
+      <img src={photoName} alt={name} />
       <div>
-        <h3>{pizza.name}</h3>
-        <p>{pizza.ingredients}</p>
-        <span>{pizza.price + 3}$</span>
+        <h3>{name}</h3>
+        <p>{ingredients}</p>
+        <span>{price + 3}$</span>
       </div>
     </li>
   );
@@ -57,13 +59,7 @@ const Footer = () => {
   return (
     <footer className="footer">
       {isOpen ? (
-        <div className="order">
-          <p>
-            We're currently open until {closeHour}:00. Come visit us or order
-            online!
-          </p>
-          <button className="btn">Order</button>
-        </div>
+        <Order openHour={openHour} closeHour={closeHour} />
       ) : (
         <p>
           We're happy to welcome you between {openHour}:00 and {closeHour}:00.
@@ -72,3 +68,13 @@ const Footer = () => {
     </footer>
   );
 };
+
+const Order = ({ openHour, closeHour }) => (
+  <div className="order">
+    <p>
+      We're currently open from {openHour}:00 until {closeHour}:00. Come visit
+      us or order online!
+    </p>
+    <button className="btn">Order</button>
+  </div>
+);
