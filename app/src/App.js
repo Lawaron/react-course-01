@@ -35,11 +35,9 @@ const App = () => {
   const [step, setStep] = useState(1);
   const [isOpen, setIsOpen] = useState(true);
 
-  const handlePrevious = () => {
-    if (step > 1) setStep(step - 1);
-  };
+  const handlePrevious = () => setStep((s) => Math.max(1, s - 1));
 
-  const handleNext = () => setStep((s) => (s === 3 ? s : s + 1));
+  const handleNext = () => setStep((s) => Math.min(3, s + 1));
 
   const handleStep = (s) => setStep(s);
 
