@@ -33,39 +33,41 @@ const Button = ({ text, clickHandler }) => (
 
 const App = () => {
   const [step, setStep] = useState(1);
+  const [isOpen, setIsOpen] = useState(true);
 
-  const handlePrevious = () => {
-    if (step > 1) setStep(step - 1);
-  };
+  const handlePrevious = () => step > 1 && setStep(step - 1);
 
-  const handleNext = () => {
-    setStep((s) => (s === 3 ? s : s + 1));
-  };
+  const handleNext = () => setStep((s) => (s === 3 ? s : s + 1));
 
-  const handleStep = (s) => {
-    setStep(s);
-  };
+  const handleStep = (s) => setStep(s);
 
   return (
-    <div className="steps">
-      <div className="numbers">
-        {messages.map((_, index) => (
-          <Step
-            step={step}
-            item={index + 1}
-            stepHandler={handleStep}
-            key={index}
-          />
-        ))}
-      </div>
-      <p className="message">
-        Step {step}: {messages[step - 1]}
-      </p>
-      <div className="buttons">
-        <Button text="Previous" clickHandler={handlePrevious} />
-        <Button text="Next" clickHandler={handleNext} />
-      </div>
-    </div>
+    <>
+      <button className="close" onClick={() => setIsOpen(!isOpen)}>
+        &times;
+      </button>
+      {isOpen && (
+        <div className="steps">
+          <div className="numbers">
+            {messages.map((_, index) => (
+              <Step
+                step={step}
+                item={index + 1}
+                stepHandler={handleStep}
+                key={index}
+              />
+            ))}
+          </div>
+          <p className="message">
+            Step {step}: {messages[step - 1]}
+          </p>
+          <div className="buttons">
+            <Button text="Previous" clickHandler={handlePrevious} />
+            <Button text="Next" clickHandler={handleNext} />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
