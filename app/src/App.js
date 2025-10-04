@@ -14,7 +14,7 @@ const Step = ({ step, item, stepHandler }) => {
   return (
     <div
       style={{ cursor: "pointer" }}
-      className={`${step >= item && "active"}`}
+      className={step >= item && "active"}
       onClick={handleClick}
     >
       {item}
