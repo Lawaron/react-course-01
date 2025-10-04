@@ -14,7 +14,7 @@ const Step = ({ step, item, stepHandler }) => {
   return (
     <div
       style={{ cursor: "pointer" }}
-      className={step >= item && "active"}
+      className={step >= item ? "active" : ""}
       onClick={handleClick}
     >
       {item}
@@ -35,7 +35,9 @@ const App = () => {
   const [step, setStep] = useState(1);
   const [isOpen, setIsOpen] = useState(true);
 
-  const handlePrevious = () => step > 1 && setStep(step - 1);
+  const handlePrevious = () => {
+    if (step > 1) setStep(step - 1);
+  };
 
   const handleNext = () => setStep((s) => (s === 3 ? s : s + 1));
 
