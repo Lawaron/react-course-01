@@ -14,8 +14,11 @@ services:
     container_name: npm-cli
     entrypoint:
       - npm
-    env_file:
-      - node/.env
+    environment:
+      - WDS_SOCKET_PORT=0
+      - HOST=0.0.0.0
+      - WEBPACK_DEV_SERVER_WEBPACK_OPTIONS={\"watchOptions\":{\"followSymlinks\":true,\"poll\":1000}}
+      - CHOKIDAR_INTERVAL=1000
 
   npx:
     <<: *node-config

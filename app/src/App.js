@@ -1,73 +1,52 @@
-import { useState } from "react";
-
-const messages = [
-  "Learn React ⚛️",
-  "Apply for jobs 💼",
-  "Invest your new income 🤑",
+const initialItems = [
+  { id: 1, description: "Passports", quantity: 2, packed: false },
+  { id: 2, description: "Socks", quantity: 12, packed: false },
+  { id: 3, description: "Charger", quantity: 2, packed: true },
 ];
 
-const Step = ({ step, item, stepHandler }) => {
-  const handleClick = () => {
-    stepHandler(item);
-  };
+const Logo = () => <h1>🚀 Far Away 🎒</h1>;
 
+const Form = () => {
   return (
-    <div
-      style={{ cursor: "pointer" }}
-      className={step >= item ? "active" : ""}
-      onClick={handleClick}
-    >
-      {item}
-    </div>
+    <form className="add-form">
+      <h3>What do you need for your 🛶 trip?</h3>
+    </form>
   );
 };
 
-const Button = ({ text, clickHandler }) => (
-  <button
-    style={{ backgroundColor: "#7950f2", color: "#fff" }}
-    onClick={clickHandler}
-  >
-    {text}
-  </button>
+const Item = ({ id, description, quantity, packed }) => (
+  <li>
+    <span style={packed ? { textDecoration: "line-through" } : {}}>
+      {`${quantity} ${description}`}
+      <button>❌</button>
+    </span>
+  </li>
+);
+
+const PackingList = () => (
+  <div className="list">
+    <ul>
+      {initialItems.map((item) => (
+        <Item {...item} />
+      ))}
+    </ul>
+  </div>
+);
+
+const Stats = () => (
+  <footer className="stats">
+    <em>👜 You have X items on your list, and you already packed X (X%)</em>
+  </footer>
 );
 
 const App = () => {
-  const [step, setStep] = useState(1);
-  const [isOpen, setIsOpen] = useState(true);
-
-  const handlePrevious = () => setStep((s) => Math.max(1, s - 1));
-
-  const handleNext = () => setStep((s) => Math.min(3, s + 1));
-
-  const handleStep = (s) => setStep(s);
-
   return (
-    <>
-      <button className="close" onClick={() => setIsOpen(!isOpen)}>
-        &times;
-      </button>
-      {isOpen && (
-        <div className="steps">
-          <div className="numbers">
-            {messages.map((_, index) => (
-              <Step
-                step={step}
-                item={index + 1}
-                stepHandler={handleStep}
-                key={index}
-              />
-            ))}
-          </div>
-          <p className="message">
-            Step {step}: {messages[step - 1]}
-          </p>
-          <div className="buttons">
-            <Button text="Previous" clickHandler={handlePrevious} />
-            <Button text="Next" clickHandler={handleNext} />
-          </div>
-        </div>
-      )}
-    </>
+    <div className="app">
+      <Logo />
+      <Form />
+      <PackingList />
+      <Stats />
+    </div>
   );
 };
 
