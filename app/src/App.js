@@ -7,9 +7,25 @@ const initialItems = [
 const Logo = () => <h1>🚀 Far Away 🎒</h1>;
 
 const Form = () => {
+  const options = Array.from({ length: 20 }, (_, i) => i + 1);
+
+  const handleSubmit = (event) => {
+    console.log(event);
+    event.preventDefault();
+  };
+
   return (
-    <form className="add-form">
+    <form className="add-form" onSubmit={handleSubmit}>
       <h3>What do you need for your 🛶 trip?</h3>
+      <select name="" id="">
+        {options.map((num) => (
+          <option value={num} key={num}>
+            {num}
+          </option>
+        ))}
+      </select>
+      <input type="text" placeholder="Item..." value="" onChange={() => {}} />
+      <button>Add</button>
     </form>
   );
 };
@@ -27,7 +43,7 @@ const PackingList = () => (
   <div className="list">
     <ul>
       {initialItems.map((item) => (
-        <Item {...item} />
+        <Item {...item} key={item.id} />
       ))}
     </ul>
   </div>
