@@ -101,11 +101,20 @@ const PackingList = ({ items, onDeleteItem, onToggleItem }) => (
   </div>
 );
 
-const Stats = () => (
-  <footer className="stats">
-    <em>👜 You have X items on your list, and you already packed X (X%)</em>
-  </footer>
-);
+const Stats = ({ items }) => {
+  const numItems = items.length;
+  const numPacked = items.filter((item) => item.packed).length;
+  const percentPacked = numItems ? Math.round((numPacked / numItems) * 100) : 0;
+
+  return (
+    <footer className="stats">
+      <em>
+        👜 You have {numItems} items on your list, and you already packed{" "}
+        {numPacked} ({percentPacked}%)
+      </em>
+    </footer>
+  );
+};
 
 const App = () => {
   const [items, setItems] = useState([]);
@@ -135,7 +144,7 @@ const App = () => {
         onDeleteItem={handleDeleteItem}
         onToggleItem={handleToggleItem}
       />
-      <Stats />
+      <Stats items={items} />
     </div>
   );
 };
