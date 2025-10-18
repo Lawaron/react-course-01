@@ -75,6 +75,7 @@ const Item = ({
     <input
       type="checkbox"
       value={packed}
+      checked={packed}
       onChange={() => {
         onToggleItem(id);
       }}
@@ -86,42 +87,89 @@ const Item = ({
   </li>
 );
 
-const PackingList = ({ items, onDeleteItem, onToggleItem }) => (
-  <div className="list">
-    <ul>
-      {items.map((item) => (
-        <Item
-          {...item}
-          key={item.id}
-          onDeleteItem={onDeleteItem}
-          onToggleItem={onToggleItem}
-        />
-      ))}
-    </ul>
+const PackingList = ({
+  items,
+  onDeleteItem,
+  onToggleItem,
+  onClear,
+  onMarkAllAsPacked,
+}) => {
+  const [sortBy, setSortBy] = useState("input");
+  let sortedItems;
+
+  switch (sortBy) {
+    case "description":
+      sortedItems = items
+        .slice()
+        .sort((a, b) => a.description.localeCompare(b.description));
+      break;
+    case "packed":
+      sortedItems = items
+        .slice()
+        .sort((a, b) => Number(a.packed) - Number(b.packed));
+      break;
+    case "quantity":
+      sortedItems = items.slice().sort((a, b) => a.quantity - b.quantity);
+      break;
+    default:
+      sortedItems = items;
+  }
+
+  return (
+    <div className="list">
+      <ul>
+        {sortedItems.map((item) => (
+          <Item
+            {...item}
+            key={item.id}
+            onDeleteItem={onDeleteItem}
+            onToggleItem={onToggleItem}
+          />
+        ))}
+      </ul>
+      <Actions
+        sortBy={sortBy}
+        onSortByChanged={setSortBy}
+        onClear={onClear}
+        onMarkAllAsPacked={onMarkAllAsPacked}
+      />
+    </div>
+  );
+};
+
+const Actions = ({ sortBy, onSortByChanged, onClear, onMarkAllAsPacked }) => (
+  <div className="actions">
+    <select value={sortBy} onChange={(e) => onSortByChanged(e.target.value)}>
+      <option value="input">Sort by Input Order</option>
+      <option value="description">Sort by Description</option>
+      <option value="packed">Sort by Packed Status</option>
+      <option value="quantity">Sort by Quantity</option>
+    </select>
+    <button onClick={onClear}>Clear List</button>
+    <button onClick={onMarkAllAsPacked}>Mark All as Packed</button>
   </div>
 );
 
 const Stats = ({ items }) => {
   const numItems = items.length;
-
-  if (numItems === 0) {
-    return (
-      <footer className="stats">
-        <em>👜 Your packing list is empty. Start adding some items! 👜</em>
-      </footer>
-    );
-  }
-
   const numPacked = items.filter((item) => item.packed).length;
   const percentPacked = numItems ? Math.round((numPacked / numItems) * 100) : 0;
 
+  const messages = {
+    empty: "👜 Your packing list is empty. Start adding some items! 👜",
+    ready: "🎉 You are ready to go! 🎉",
+    inProgress: `👜 You have ${numItems} items on your list, and you already packed ${numPacked} (${percentPacked}%)`,
+  };
+
+  const getMessage = () => {
+    if (numItems === 0) return messages.empty;
+    if (percentPacked === 100) return messages.ready;
+    return messages.inProgress;
+  };
+
   return (
     <footer className="stats">
-      <em>
-        {percentPacked === 100
-          ? "🎉 You are ready to go! 🎉"
-          : `👜 You have ${numItems} items on your list, and you already packed ${numPacked} (${percentPacked}%)`}
-      </em>
+      <em>{getMessage()}</em>
     </footer>
   );
 };
@@ -145,6 +193,14 @@ const App = () => {
     );
   };
 
+  const handleClear = () => {
+    setItems([]);
+  };
+
+  const handleMarkAllAsPacked = () => {
+    setItems((items) => items.map((item) => ({ ...item, packed: true })));
+  };
+
   return (
     <div className="app">
       <Logo />
@@ -153,6 +209,8 @@ const App = () => {
         items={items}
         onDeleteItem={handleDeleteItem}
         onToggleItem={handleToggleItem}
+        onClear={handleClear}
+        onMarkAllAsPacked={handleMarkAllAsPacked}
       />
       <Stats items={items} />
     </div>
