@@ -103,14 +103,24 @@ const PackingList = ({ items, onDeleteItem, onToggleItem }) => (
 
 const Stats = ({ items }) => {
   const numItems = items.length;
+
+  if (numItems === 0) {
+    return (
+      <footer className="stats">
+        <em>👜 Your packing list is empty. Start adding some items! 👜</em>
+      </footer>
+    );
+  }
+
   const numPacked = items.filter((item) => item.packed).length;
   const percentPacked = numItems ? Math.round((numPacked / numItems) * 100) : 0;
 
   return (
     <footer className="stats">
       <em>
-        👜 You have {numItems} items on your list, and you already packed{" "}
-        {numPacked} ({percentPacked}%)
+        {percentPacked === 100
+          ? "🎉 You are ready to go! 🎉"
+          : `👜 You have ${numItems} items on your list, and you already packed ${numPacked} (${percentPacked}%)`}
       </em>
     </footer>
   );
