@@ -1,11 +1,4 @@
-const Item = ({
-  id,
-  description,
-  quantity,
-  packed,
-  onDeleteItem,
-  onToggleItem,
-}) => (
+const Item = ({ id, children, packed, onDeleteItem, onToggleItem }) => (
   <li>
     <input
       type="checkbox"
@@ -16,7 +9,7 @@ const Item = ({
       }}
     />
     <span style={packed ? { textDecoration: "line-through" } : {}}>
-      {`${quantity} ${description}`}
+      {children}
       <button onClick={() => onDeleteItem(id)}>❌</button>
     </span>
   </li>

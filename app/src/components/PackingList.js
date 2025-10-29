@@ -26,24 +26,22 @@ const PackingList = ({
 }) => {
   const [sortBy, setSortBy] = useState("input");
   let sortedItems = sort(items, sortBy);
+  const itemHandlers = { onDeleteItem, onToggleItem };
+  const actionHandlers = { onClear, onMarkAllAsPacked };
 
   return (
     <div className="list">
       <ul>
-        {sortedItems.map((item) => (
-          <Item
-            {...item}
-            key={item.id}
-            onDeleteItem={onDeleteItem}
-            onToggleItem={onToggleItem}
-          />
+        {sortedItems.map(({ id, description, quantity, packed }) => (
+          <Item id={id} packed={packed} key={id} {...itemHandlers}>
+            {`${quantity} ${description}`}
+          </Item>
         ))}
       </ul>
       <Actions
         sortBy={sortBy}
         onSortByChanged={setSortBy}
-        onClear={onClear}
-        onMarkAllAsPacked={onMarkAllAsPacked}
+        {...actionHandlers}
       />
     </div>
   );
