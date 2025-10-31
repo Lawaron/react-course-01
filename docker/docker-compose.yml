@@ -1,5 +1,5 @@
 x-node-config: &node-config
-  image: node:22-alpine
+  image: node:24-alpine
   user: "${HOST_UID}:${HOST_GID}"
   volumes:
     - ../app:/app
