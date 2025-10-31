@@ -5,13 +5,13 @@ import MovieList from "./MovieList";
 import WatchedSummary from "./WatchedSummary";
 import WatchedList from "./WatchedList";
 
-const Main = () => {
+const Main = ({ movies }) => {
   const [watched] = useState(tempWatchedData);
 
   return (
     <main className="main">
       <Box>
-        <MovieList />
+        <MovieList movies={movies} />
       </Box>
       <Box>
         <>

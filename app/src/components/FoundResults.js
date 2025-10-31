@@ -1,6 +1,6 @@
-const FoundResults = () => (
+const FoundResults = ({ numResults }) => (
   <p className="found-results">
-    Found <strong>X</strong> results
+    Found <strong>{numResults}</strong> results
   </p>
 );
 
