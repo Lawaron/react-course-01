@@ -8,3 +8,7 @@ Udemy React Course - Jonas Schmedtmann
 ./npm i --save-dev @types/react @types/react-dom
 ./npm run start
 ```
+
+Tips
+
+https://blog.webdevsimplified.com/2022-07/react-folder-structure/
