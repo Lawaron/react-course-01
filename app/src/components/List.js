@@ -1,5 +1,5 @@
-const List = ({ className, items, renderItem }) => (
-  <ul className={className}>{items?.map((item) => renderItem(item))}</ul>
+const List = ({ items, renderItem }) => (
+  <ul className="list">{items?.map(renderItem)}</ul>
 );
 
 export default List;

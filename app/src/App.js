@@ -24,7 +24,6 @@ const App = () => {
         <Box>
           <List
             items={movies}
-            className="list"
             renderItem={(movie) => <Movie movie={movie} key={movie.imdbID} />}
           />
         </Box>
@@ -32,7 +31,6 @@ const App = () => {
           <WatchedSummary watched={watched} />
           <List
             items={watched}
-            className="list"
             renderItem={(movie) => (
               <WatchedMovie movie={movie} key={movie.imdbID} />
             )}
