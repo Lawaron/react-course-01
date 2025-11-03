@@ -9,10 +9,12 @@ import FoundResults from "./components/FoundResults";
 import List from "./components/List";
 import Movie from "./components/Movie";
 import WatchedMovie from "./components/WatchedMovie";
+import StarRating from "./components/StarRating";
 
 const App = () => {
   const [movies] = useState(tempMovieData);
   const [watched] = useState(tempWatchedData);
+  const [movieRank, setMovieRank] = useState(0);
 
   return (
     <>
@@ -35,6 +37,15 @@ const App = () => {
               <WatchedMovie movie={movie} key={movie.imdbID} />
             )}
           />
+        </Box>
+        <Box>
+          <StarRating
+            maxRating={5}
+            size={36}
+            messages={["Bad", "Not Too Bad", "Average", "Nice", "Amazing"]}
+            onSetRating={setMovieRank}
+          />
+          Movie Rank: {movieRank}
         </Box>
       </Main>
     </>

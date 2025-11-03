@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 const containerStyle = {
   display: "flex",
@@ -17,6 +18,7 @@ const StarRating = ({
   className = "",
   messages = [],
   defaultRating = 0,
+  onSetRating,
 }) => {
   const [rating, setRating] = useState(defaultRating);
   const [hoverRating, setHoverRating] = useState(0);
@@ -37,13 +39,18 @@ const StarRating = ({
     return hoverRating || rating || "";
   };
 
+  const handleRating = (rating) => {
+    setRating(rating);
+    if (onSetRating) onSetRating(rating);
+  };
+
   return (
     <div style={containerStyle} className={className}>
       <div style={starContainerStyle}>
         {Array.from({ length: maxRating }, (_, i) => (
           <Star
             key={i}
-            onRate={() => setRating(i + 1)}
+            onRate={() => handleRating(i + 1)}
             onHoverIn={() => setHoverRating(i + 1)}
             onHoverOut={() => setHoverRating(0)}
             isFull={(hoverRating || rating) >= i + 1}
@@ -55,6 +62,16 @@ const StarRating = ({
       <p style={textStyle}>{getMessage()}</p>
     </div>
   );
+};
+
+StarRating.propTypes = {
+  maxRating: PropTypes.number,
+  color: PropTypes.string,
+  size: PropTypes.number,
+  className: PropTypes.string,
+  messages: PropTypes.arrayOf(PropTypes.string),
+  defaultRating: PropTypes.number,
+  onSetRating: PropTypes.func,
 };
 
 const Star = ({ onRate, isFull, onHoverIn, onHoverOut, color, size }) => {
