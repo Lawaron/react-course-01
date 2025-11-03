@@ -26,6 +26,9 @@ export default function App() {
   );
 }
 
+// console.log(<DifferentContent test={23}>RR</DifferentContent>);
+// console.log(DifferentContent({ test: 23, children: "RR" }));
+
 function Tabbed({ content }) {
   const [activeTab, setActiveTab] = useState(0);
 
@@ -39,10 +42,14 @@ function Tabbed({ content }) {
       </div>
 
       {activeTab <= 2 ? (
-        <TabContent item={content.at(activeTab)} />
+        <TabContent
+          item={content.at(activeTab)}
+          key={content.at(activeTab).summary}
+        />
       ) : (
         <DifferentContent />
       )}
+      {/* {TabContent({ item: content.at(0) })} */}
     </div>
   );
 }
@@ -62,8 +69,29 @@ function TabContent({ item }) {
   const [showDetails, setShowDetails] = useState(true);
   const [likes, setLikes] = useState(0);
 
+  console.log("RENDER", showDetails, likes);
+
   function handleInc() {
-    setLikes(likes + 1);
+    // setLikes(likes + 1);
+    setLikes((likes) => likes + 1);
+  }
+
+  function handleTripleInc() {
+    setLikes((curr) => curr + 1);
+    setLikes((curr) => curr + 1);
+    handleInc();
+    console.log(likes);
+  }
+
+  function handleUndo() {
+    setShowDetails(true);
+    setLikes(0);
+    console.log(showDetails, likes);
+  }
+
+  function handleUndoLater() {
+    console.log("clicked");
+    setTimeout(handleUndo, 2000);
   }
 
   return (
@@ -79,13 +107,19 @@ function TabContent({ item }) {
         <div className="hearts-counter">
           <span>{likes} ❤️</span>
           <button onClick={handleInc}>+</button>
-          <button>+++</button>
+          <button onClick={handleTripleInc}>+++</button>
         </div>
       </div>
 
       <div className="tab-undo">
-        <button>Undo</button>
-        <button>Undo in 2s</button>
+        <button onClick={handleUndo}>Undo</button>
+        <button
+          onClickCapture={() => console.log("Capture")}
+          onClick={handleUndoLater}
+        >
+          {" "}
+          in 2s
+        </button>
       </div>
     </div>
   );
