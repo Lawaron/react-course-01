@@ -13,16 +13,31 @@ import WatchedMovie from "./components/WatchedMovie";
 
 const apiKey = process.env.REACT_APP_OMDB_API_KEY;
 
+const Loader = () => <p className="loader">Loading...</p>;
+
 const App = () => {
   const [movies, setMovies] = useState([]);
   const [watched] = useState([]);
   // const [movieRank, setMovieRank] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const query = "matrix";
 
-  useEffect(() => {
-    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=matrix`)
-      .then((res) => res.json())
-      .then((data) => setMovies(data.Search));
-  }, []);
+  useEffect(
+    () => async () => {
+      setIsLoading(true);
+      const res = await fetch(
+        `https://www.omdbapi.com/?apikey=${apiKey}&s=${query}`
+      );
+
+      const data = await res.json();
+
+      setMovies(data.Search);
+      setIsLoading(false);
+
+      return () => console.log("cleanup");
+    },
+    []
+  );
 
   return (
     <>
@@ -32,10 +47,14 @@ const App = () => {
       </Navbar>
       <Main>
         <Box>
-          <List
-            items={movies}
-            renderItem={(movie) => <Movie movie={movie} key={movie.imdbID} />}
-          />
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <List
+              items={movies}
+              renderItem={(movie) => <Movie movie={movie} key={movie.imdbID} />}
+            />
+          )}
         </Box>
         <Box>
           <WatchedSummary watched={watched} />
