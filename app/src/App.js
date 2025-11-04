@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import { tempMovieData, tempWatchedData } from "./data/tempData";
 import Box from "./components/Box";
 import WatchedSummary from "./components/WatchedSummary";
 import Main from "./components/Main";
@@ -9,30 +8,57 @@ import FoundResults from "./components/FoundResults";
 import List from "./components/List";
 import Movie from "./components/Movie";
 import WatchedMovie from "./components/WatchedMovie";
-// import StarRating from "./components/StarRating";
 
 const apiKey = process.env.REACT_APP_OMDB_API_KEY;
 
 const Loader = () => <p className="loader">Loading...</p>;
 
+const ErrorMessage = ({ message }) => (
+  <p className="error">
+    <span>😕</span>
+    {message}
+  </p>
+);
+
 const App = () => {
   const [movies, setMovies] = useState([]);
   const [watched] = useState([]);
-  // const [movieRank, setMovieRank] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const query = "matrix";
+
+  const moviesBoxContent = () => {
+    if (isLoading) return <Loader />;
+    if (error) return <ErrorMessage message={error} />;
+    return (
+      <List
+        items={movies}
+        renderItem={(movie) => <Movie movie={movie} key={movie.imdbID} />}
+      />
+    );
+  };
 
   useEffect(
     () => async () => {
-      setIsLoading(true);
-      const res = await fetch(
-        `https://www.omdbapi.com/?apikey=${apiKey}&s=${query}`
-      );
+      try {
+        setIsLoading(true);
 
-      const data = await res.json();
+        const res = await fetch(
+          `https://www.omdbapi.com/?apikey=${apiKey}&s=${query}`
+        );
 
-      setMovies(data.Search);
-      setIsLoading(false);
+        if (!res.ok)
+          throw new Error("Something went wrong while fetching movies!");
+
+        const data = await res.json();
+        if (data.Response === "False") throw new Error("Movie not found!");
+
+        setMovies(data.Search);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
 
       return () => console.log("cleanup");
     },
@@ -46,16 +72,7 @@ const App = () => {
         <FoundResults numResults={movies.length} />
       </Navbar>
       <Main>
-        <Box>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <List
-              items={movies}
-              renderItem={(movie) => <Movie movie={movie} key={movie.imdbID} />}
-            />
-          )}
-        </Box>
+        <Box>{moviesBoxContent()}</Box>
         <Box>
           <WatchedSummary watched={watched} />
           <List
@@ -65,15 +82,6 @@ const App = () => {
             )}
           />
         </Box>
-        {/* <Box>
-          <StarRating
-            maxRating={5}
-            size={36}
-            messages={["Bad", "Not Too Bad", "Average", "Nice", "Amazing"]}
-            onSetRating={setMovieRank}
-          />
-          Movie Rank: {movieRank}
-        </Box> */}
       </Main>
     </>
   );
