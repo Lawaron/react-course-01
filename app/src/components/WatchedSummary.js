@@ -1,4 +1,13 @@
-import { meanBy } from "lodash";
+const average = (array, property) => {
+  if (!array || array.length === 0) {
+    return 0;
+  }
+  const values = array.map((item) => item[property]);
+
+  const sum = values.reduce((acc, value) => acc + value, 0);
+
+  return sum / values.length;
+};
 
 const WatchedSummary = ({ watched }) => (
   <div className="summary">
@@ -10,15 +19,15 @@ const WatchedSummary = ({ watched }) => (
       </p>
       <p>
         <span>⭐️</span>
-        <span>{meanBy(watched, "imdbRating")}</span>
+        <span>{average(watched, "imdbRating")}</span>
       </p>
       <p>
         <span>🌟</span>
-        <span>{meanBy(watched, "userRating")}</span>
+        <span>{average(watched, "userRating")}</span>
       </p>
       <p>
         <span>⏳</span>
-        <span>{meanBy(watched, "runtime")} min</span>
+        <span>{average(watched, "runtime")} min</span>
       </p>
     </div>
   </div>

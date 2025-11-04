@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { tempMovieData, tempWatchedData } from "./data/tempData";
+import { useEffect, useState } from "react";
+// import { tempMovieData, tempWatchedData } from "./data/tempData";
 import Box from "./components/Box";
 import WatchedSummary from "./components/WatchedSummary";
 import Main from "./components/Main";
@@ -9,12 +9,20 @@ import FoundResults from "./components/FoundResults";
 import List from "./components/List";
 import Movie from "./components/Movie";
 import WatchedMovie from "./components/WatchedMovie";
-import StarRating from "./components/StarRating";
+// import StarRating from "./components/StarRating";
+
+const apiKey = process.env.REACT_APP_OMDB_API_KEY;
 
 const App = () => {
-  const [movies] = useState(tempMovieData);
-  const [watched] = useState(tempWatchedData);
-  const [movieRank, setMovieRank] = useState(0);
+  const [movies, setMovies] = useState([]);
+  const [watched] = useState([]);
+  // const [movieRank, setMovieRank] = useState(0);
+
+  useEffect(() => {
+    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=matrix`)
+      .then((res) => res.json())
+      .then((data) => setMovies(data.Search));
+  }, []);
 
   return (
     <>
@@ -38,7 +46,7 @@ const App = () => {
             )}
           />
         </Box>
-        <Box>
+        {/* <Box>
           <StarRating
             maxRating={5}
             size={36}
@@ -46,7 +54,7 @@ const App = () => {
             onSetRating={setMovieRank}
           />
           Movie Rank: {movieRank}
-        </Box>
+        </Box> */}
       </Main>
     </>
   );

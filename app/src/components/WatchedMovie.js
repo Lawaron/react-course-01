@@ -1,6 +1,6 @@
 const WatchedMovie = ({ movie }) => (
   <li>
-    <img src={movie.poster} alt={`${movie.title} poster`} />
+    <img src={movie.Poster} alt={`${movie.Title} poster`} />
     <h3>{movie.Title}</h3>
     <div>
       <p>
