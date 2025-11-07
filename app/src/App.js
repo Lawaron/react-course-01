@@ -19,9 +19,28 @@ const ErrorMessage = ({ message }) => (
   </p>
 );
 
+const MovieDetails = ({ selectedId, onCloseMovie }) => (
+  <div className="details">
+    <button className="btn-back" onClick={onCloseMovie}>
+      &larr;
+    </button>
+    {selectedId}
+  </div>
+);
+
 const App = () => {
   const [watched] = useState([]);
   const [query, setQuery] = useState("matrix");
+  const [selectedId, setSelectedId] = useState(null);
+
+  const handleSelectMovie = (id) => {
+    setSelectedId((selectedId) => (selectedId === id ? null : id));
+  };
+
+  const handleCloseMovie = () => {
+    setSelectedId(null);
+  };
+
   const { movies, isLoading, error } = useMovies(query);
 
   const moviesBoxContent = () => {
@@ -30,7 +49,14 @@ const App = () => {
     return (
       <List
         items={movies}
-        renderItem={(movie) => <Movie movie={movie} key={movie.imdbID} />}
+        className="list list-movies"
+        renderItem={(movie) => (
+          <Movie
+            movie={movie}
+            key={movie.imdbID}
+            onSelectMovie={handleSelectMovie}
+          />
+        )}
       />
     );
   };
@@ -44,13 +70,22 @@ const App = () => {
       <Main>
         <Box>{moviesBoxContent()}</Box>
         <Box>
-          <WatchedSummary watched={watched} />
-          <List
-            items={watched}
-            renderItem={(movie) => (
-              <WatchedMovie movie={movie} key={movie.imdbID} />
-            )}
-          />
+          {selectedId ? (
+            <MovieDetails
+              selectedId={selectedId}
+              onCloseMovie={handleCloseMovie}
+            />
+          ) : (
+            <>
+              <WatchedSummary watched={watched} />
+              <List
+                items={watched}
+                renderItem={(movie) => (
+                  <WatchedMovie movie={movie} key={movie.imdbID} />
+                )}
+              />
+            </>
+          )}
         </Box>
       </Main>
     </>
