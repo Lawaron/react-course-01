@@ -1,25 +1,21 @@
-import { useState, useEffect } from "react";
+import { useReducer, useEffect } from "react";
+import { fetchReducer, initialState } from "../reducers/fetchReducer";
 
 export const useFetch = (fetcher) => {
-  const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [state, dispatch] = useReducer(fetchReducer, initialState);
 
   useEffect(() => {
     const controller = new AbortController();
 
     async function fetchData(signal) {
       try {
-        setIsLoading(true);
-        setError("");
-        setData(await fetcher(signal));
+        dispatch({ type: "FETCH_START" });
+        const data = await fetcher(signal);
+        dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
         if (err.name !== "AbortError") {
-          setError(err.message);
-          setData(null);
+          dispatch({ type: "FETCH_ERROR", payload: err.message });
         }
-      } finally {
-        setIsLoading(false);
       }
     }
 
@@ -30,5 +26,5 @@ export const useFetch = (fetcher) => {
     };
   }, [fetcher]);
 
-  return { data, isLoading, error };
+  return state;
 };

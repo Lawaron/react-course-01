@@ -27,6 +27,8 @@ const App = () => {
 
   const { movies, isLoading, error } = useMovies(query);
 
+  console.log({ movies });
+
   return (
     <>
       <Navbar>
