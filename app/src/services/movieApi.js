@@ -1,10 +1,7 @@
-// services/movieApi.js
 const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
 
 export const getMovies = async (query, signal) => {
-  if (query.length < 3) {
-    return [];
-  }
+  if (query.length < 3) return [];
 
   const res = await fetch(
     `https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`,
@@ -25,6 +22,8 @@ export const getMovies = async (query, signal) => {
 };
 
 export const getMovieDetails = async (id, signal) => {
+  if (!id) return null;
+
   const res = await fetch(
     `https://www.omdbapi.com/?apikey=${API_KEY}&i=${id}&plot=full`,
     { signal }

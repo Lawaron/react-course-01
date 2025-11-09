@@ -1,38 +1,22 @@
 import { useState, useEffect } from "react";
 
-export const useFetch = (
-  initialData,
-  shouldNotRun,
-  fetcher,
-  dependencies = []
-) => {
-  const [data, setData] = useState(initialData);
+export const useFetch = (fetcher) => {
+  const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (shouldNotRun) {
-      setData(initialData);
-      setError("");
-
-      return;
-    }
-
     const controller = new AbortController();
 
     async function fetchData(signal) {
       try {
         setIsLoading(true);
         setError("");
-
-        const data = await fetcher(signal);
-
-        setData(data);
-        setError("");
+        setData(await fetcher(signal));
       } catch (err) {
         if (err.name !== "AbortError") {
           setError(err.message);
-          setData(initialData);
+          setData(null);
         }
       } finally {
         setIsLoading(false);
@@ -44,7 +28,7 @@ export const useFetch = (
     return () => {
       controller.abort();
     };
-  }, dependencies); // eslint-disable-line
+  }, [fetcher]);
 
   return { data, isLoading, error };
 };

@@ -1,14 +1,14 @@
 import { useFetch } from "./useFetch";
 import { getMovieDetails } from "../services/movieApi";
+import { useCallback } from "react";
 
 export const useMovieDetails = (movieId) => {
-  const {
-    data: movie,
-    isLoading,
-    error,
-  } = useFetch(null, !movieId, (signal) => getMovieDetails(movieId, signal), [
-    movieId,
-  ]);
+  const fetcher = useCallback(
+    (signal) => getMovieDetails(movieId, signal),
+    [movieId]
+  );
+
+  const { data: movie, isLoading, error } = useFetch(fetcher);
 
   return { movie, isLoading, error };
 };

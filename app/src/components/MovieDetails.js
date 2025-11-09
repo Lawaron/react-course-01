@@ -5,8 +5,6 @@ import StarRating from "./StarRating";
 const MovieDetails = ({ selectedId, onCloseMovie }) => {
   const { movie, isLoading, error } = useMovieDetails(selectedId);
 
-  console.log({ movie });
-
   return (
     <DataDisplay {...{ isLoading, error }}>
       {movie && (
