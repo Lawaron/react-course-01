@@ -9,24 +9,8 @@ import List from "./components/List";
 import Movie from "./components/Movie";
 import WatchedMovie from "./components/WatchedMovie";
 import { useMovies } from "./hooks/useMovies";
-
-const Loader = () => <p className="loader">Loading...</p>;
-
-const ErrorMessage = ({ message }) => (
-  <p className="error">
-    <span>😕</span>
-    {message}
-  </p>
-);
-
-const MovieDetails = ({ selectedId, onCloseMovie }) => (
-  <div className="details">
-    <button className="btn-back" onClick={onCloseMovie}>
-      &larr;
-    </button>
-    {selectedId}
-  </div>
-);
+import MovieDetails from "./components/MovieDetails";
+import DataDisplay from "./components/DataDisplay";
 
 const App = () => {
   const [watched] = useState([]);
@@ -43,24 +27,6 @@ const App = () => {
 
   const { movies, isLoading, error } = useMovies(query);
 
-  const moviesBoxContent = () => {
-    if (isLoading) return <Loader />;
-    if (error) return <ErrorMessage message={error} />;
-    return (
-      <List
-        items={movies}
-        className="list list-movies"
-        renderItem={(movie) => (
-          <Movie
-            movie={movie}
-            key={movie.imdbID}
-            onSelectMovie={handleSelectMovie}
-          />
-        )}
-      />
-    );
-  };
-
   return (
     <>
       <Navbar>
@@ -68,7 +34,23 @@ const App = () => {
         <FoundResults numResults={movies.length} />
       </Navbar>
       <Main>
-        <Box>{moviesBoxContent()}</Box>
+        <Box>
+          <DataDisplay {...{ isLoading, error }}>
+            {movies.length && (
+              <List
+                items={movies}
+                className="list list-movies"
+                renderItem={(movie) => (
+                  <Movie
+                    movie={movie}
+                    key={movie.imdbID}
+                    onSelectMovie={handleSelectMovie}
+                  />
+                )}
+              />
+            )}
+          </DataDisplay>
+        </Box>
         <Box>
           {selectedId ? (
             <MovieDetails
