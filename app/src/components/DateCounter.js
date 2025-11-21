@@ -1,33 +1,31 @@
-import { useReducer, useState } from "react";
-import countReducer from "../reducers/countReducer.js";
+import { useReducer } from "react";
+import { initialState, reducer } from "../reducers/reducer.js";
 
 export default function DateCounter() {
-  const [count, dispatchCount] = useReducer(countReducer, 0);
-  const [step] = useState(1);
+  const [{ count, step }, dispatch] = useReducer(reducer, initialState);
 
   // This mutates the date object.
   const date = new Date("june 21 2027");
   date.setDate(date.getDate() + count);
 
   const dec = function () {
-    dispatchCount({ type: "dec" });
+    dispatch({ type: "dec" });
   };
 
   const inc = function () {
-    dispatchCount({ type: "inc" });
+    dispatch({ type: "inc" });
   };
 
   const defineCount = function (e) {
-    dispatchCount({ type: "set", payload: Number(e.target.value) });
+    dispatch({ type: "setCount", payload: Number(e.target.value) });
   };
 
   const defineStep = function (e) {
-    // setStep(Number(e.target.value));
+    dispatch({ type: "setStep", payload: Number(e.target.value) });
   };
 
   const reset = function () {
-    // setCount(0);
-    // setStep(1);
+    dispatch({ type: "reset" });
   };
 
   return (
