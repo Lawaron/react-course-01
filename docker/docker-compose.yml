@@ -9,6 +9,15 @@ x-node-config: &node-config
   init: true
 
 services:
+  api:
+    image: clue/json-server
+    container_name: json-server-container
+    command: -w questions.json
+    user: "${HOST_UID}:${HOST_GID}"
+    ports:
+      - "80:80"
+    volumes:
+      - ../app/data:/data
   npm:
     <<: *node-config
     container_name: npm-cli
