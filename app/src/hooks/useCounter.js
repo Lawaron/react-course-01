@@ -9,7 +9,5 @@ const init = (initial) => ({
 export default function useCounter(initialCount = 0, initialStep = 1) {
   const initialState = { count: initialCount, step: initialStep };
 
-  const [state, dispatch] = useReducer(reducer, initialState, init);
-
-  return [state, dispatch];
+  return useReducer(reducer, initialState, init);
 }
