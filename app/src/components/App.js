@@ -4,6 +4,7 @@ import Header from "./Header";
 import Main from "./Main";
 import Loader from "./Loader";
 import Error from "./Error";
+import NextButton from "./NextButton";
 import StartScreen from "./StartScreen";
 import Question from "./Question";
 
@@ -13,17 +14,34 @@ const initialState = {
   questions: [],
   status: "loading", // 'loading', 'error', 'ready', 'active', 'finished'
   index: 0,
+  answer: null,
+  points: 0,
 };
 
 const reducer = (state, action) =>
   ({
-    dataReceived: { ...state, questions: action.payload, status: "ready" },
-    dataFailed: { ...state, status: "error" },
-    start: { ...state, status: "active" },
-  }[action.type] || state);
+    dataReceived: (payload) => ({
+      ...state,
+      questions: payload,
+      status: "ready",
+    }),
+    dataFailed: () => ({ ...state, status: "error" }),
+    start: () => ({ ...state, status: "active" }),
+    newAnswer: ({ index, point }) => ({
+      ...state,
+      answer: index,
+      points: state.points + point,
+    }),
+    nextQuestion: () => ({
+      ...state,
+      index: state.index + 1,
+      answer: null,
+    }),
+    finish: () => ({ ...state, status: "finished" }),
+  }[action.type]?.(action.payload) || state);
 
 export default function App() {
-  const [{ questions, status, index }, dispatch] = useReducer(
+  const [{ questions, status, index, answer }, dispatch] = useReducer(
     reducer,
     initialState
   );
@@ -49,7 +67,22 @@ export default function App() {
             loading: <Loader />,
             error: <Error />,
             ready: <StartScreen {...{ numQuestions }} dispatch={dispatch} />,
-            active: <Question question={questions[index]} />,
+            active: (
+              <>
+                <Question
+                  question={questions[index]}
+                  dispatch={dispatch}
+                  answer={answer}
+                />
+                <NextButton
+                  {...{
+                    dispatch,
+                    answer,
+                    index,
+                  }}
+                />
+              </>
+            ),
           }[status] || null}
         </Main>
       </div>
