@@ -7,6 +7,7 @@ import Error from "./Error";
 import NextButton from "./NextButton";
 import StartScreen from "./StartScreen";
 import Question from "./Question";
+import Progress from "./Progress";
 
 // const API_URL = "http://host.docker.internal/questions";
 
@@ -41,12 +42,16 @@ const reducer = (state, action) =>
   }[action.type]?.(action.payload) || state);
 
 export default function App() {
-  const [{ questions, status, index, answer }, dispatch] = useReducer(
+  const [{ questions, status, index, answer, points }, dispatch] = useReducer(
     reducer,
     initialState
   );
 
   const numQuestions = questions.length;
+  const maxPossiblePoints = questions.reduce(
+    (prev, curr) => prev + curr.points,
+    0
+  );
 
   useEffect(() => {
     fetch("/questions")
@@ -69,6 +74,15 @@ export default function App() {
             ready: <StartScreen {...{ numQuestions }} dispatch={dispatch} />,
             active: (
               <>
+                <Progress
+                  {...{
+                    index,
+                    numQuestions,
+                    points,
+                    maxPossiblePoints,
+                    answer,
+                  }}
+                />
                 <Question
                   question={questions[index]}
                   dispatch={dispatch}
