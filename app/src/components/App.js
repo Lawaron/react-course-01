@@ -8,6 +8,7 @@ import NextButton from "./NextButton";
 import StartScreen from "./StartScreen";
 import Question from "./Question";
 import Progress from "./Progress";
+import FinnishScreen from "./FinnishScreen";
 
 // const API_URL = "http://host.docker.internal/questions";
 
@@ -17,6 +18,7 @@ const initialState = {
   index: 0,
   answer: null,
   points: 0,
+  highScore: 0,
 };
 
 const reducer = (state, action) =>
@@ -38,14 +40,16 @@ const reducer = (state, action) =>
       index: state.index + 1,
       answer: null,
     }),
-    finish: () => ({ ...state, status: "finished" }),
+    finnish: () => ({
+      ...state,
+      status: "finnished",
+      highScore: Math.max(state.points, state.highScore),
+    }),
   }[action.type]?.(action.payload) || state);
 
 export default function App() {
-  const [{ questions, status, index, answer, points }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
+  const [{ questions, status, index, answer, points, highScore }, dispatch] =
+    useReducer(reducer, initialState);
 
   const numQuestions = questions.length;
   const maxPossiblePoints = questions.reduce(
@@ -83,19 +87,25 @@ export default function App() {
                     answer,
                   }}
                 />
-                <Question
-                  question={questions[index]}
-                  dispatch={dispatch}
-                  answer={answer}
-                />
+                {questions[index] && (
+                  <Question
+                    question={questions[index]}
+                    dispatch={dispatch}
+                    answer={answer}
+                  />
+                )}
                 <NextButton
                   {...{
                     dispatch,
                     answer,
                     index,
+                    numQuestions,
                   }}
                 />
               </>
+            ),
+            finnished: (
+              <FinnishScreen {...{ points, maxPossiblePoints, highScore }} />
             ),
           }[status] || null}
         </Main>

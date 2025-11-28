@@ -13,9 +13,7 @@ const Option = ({ option, index, answer, correctOption, onSelect }) => {
           correct: hasAnswered && isCorrect,
           wrong: hasAnswered && !isCorrect,
         })}
-        onClick={() => {
-          onSelect(index, isCorrect);
-        }}
+        onClick={() => onSelect(index, isCorrect)}
         disabled={hasAnswered}
       >
         {option}

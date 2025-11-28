@@ -5,8 +5,8 @@ const Question = ({ question, dispatch, answer }) => {
     dispatch({
       type: "newAnswer",
       payload: {
-        answer: index,
-        points: isCorrect ? question.points : 0,
+        index,
+        point: isCorrect ? question.points : 0,
       },
     });
   };
