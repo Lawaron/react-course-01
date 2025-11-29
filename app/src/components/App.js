@@ -9,6 +9,8 @@ import StartScreen from "./StartScreen";
 import Question from "./Question";
 import Progress from "./Progress";
 import FinnishScreen from "./FinnishScreen";
+import Timer from "./Timer";
+import Footer from "./Footer";
 
 // const API_URL = "http://host.docker.internal/questions";
 
@@ -19,7 +21,10 @@ const initialState = {
   answer: null,
   points: 0,
   highScore: 0,
+  secondsRemaining: null,
 };
+
+const SECS_PER_QUESTION = 30;
 
 const reducer = (state, action) =>
   ({
@@ -29,7 +34,11 @@ const reducer = (state, action) =>
       status: "ready",
     }),
     dataFailed: () => ({ ...state, status: "error" }),
-    start: () => ({ ...state, status: "active" }),
+    start: () => ({
+      ...state,
+      status: "active",
+      secondsRemaining: state.questions.length * SECS_PER_QUESTION,
+    }),
     newAnswer: ({ index, point }) => ({
       ...state,
       answer: index,
@@ -50,11 +59,18 @@ const reducer = (state, action) =>
       questions: state.questions,
       status: "ready",
     }),
+    tick: () => ({
+      ...state,
+      secondsRemaining: state.secondsRemaining - 1,
+      status: state.secondsRemaining === 0 ? "finnished" : state.status,
+    }),
   }[action.type]?.(action.payload) || state);
 
 export default function App() {
-  const [{ questions, status, index, answer, points, highScore }, dispatch] =
-    useReducer(reducer, initialState);
+  const [
+    { questions, status, index, answer, points, highScore, secondsRemaining },
+    dispatch,
+  ] = useReducer(reducer, initialState);
 
   const numQuestions = questions.length;
   const maxPossiblePoints = questions.reduce(
@@ -107,6 +123,9 @@ export default function App() {
                     numQuestions,
                   }}
                 />
+                <Footer>
+                  <Timer {...{ dispatch, secondsRemaining }} />
+                </Footer>
               </>
             ),
             finnished: (
