@@ -1,79 +1,28 @@
 import { useEffect, useReducer } from "react";
 // import DateCounter from "./DateCounter.js";
+import { initialState, reducer } from "../reducers/quizReducer";
+import {
+  loading,
+  error,
+  ready,
+  active,
+  finnished,
+} from "../utils/componentRenderers";
 import Header from "./Header";
 import Main from "./Main";
-import Loader from "./Loader";
-import Error from "./Error";
-import NextButton from "./NextButton";
-import StartScreen from "./StartScreen";
-import Question from "./Question";
-import Progress from "./Progress";
-import FinnishScreen from "./FinnishScreen";
-import Timer from "./Timer";
-import Footer from "./Footer";
 
 // const API_URL = "http://host.docker.internal/questions";
 
-const initialState = {
-  questions: [],
-  status: "loading", // 'loading', 'error', 'ready', 'active', 'finished'
-  index: 0,
-  answer: null,
-  points: 0,
-  highScore: 0,
-  secondsRemaining: null,
-};
-
-const SECS_PER_QUESTION = 30;
-
-const reducer = (state, action) =>
-  ({
-    dataReceived: (payload) => ({
-      ...state,
-      questions: payload,
-      status: "ready",
-    }),
-    dataFailed: () => ({ ...state, status: "error" }),
-    start: () => ({
-      ...state,
-      status: "active",
-      secondsRemaining: state.questions.length * SECS_PER_QUESTION,
-    }),
-    newAnswer: ({ index, point }) => ({
-      ...state,
-      answer: index,
-      points: state.points + point,
-    }),
-    nextQuestion: () => ({
-      ...state,
-      index: state.index + 1,
-      answer: null,
-    }),
-    finnish: () => ({
-      ...state,
-      status: "finnished",
-      highScore: Math.max(state.points, state.highScore),
-    }),
-    restart: () => ({
-      ...initialState,
-      questions: state.questions,
-      status: "ready",
-    }),
-    tick: () => ({
-      ...state,
-      secondsRemaining: state.secondsRemaining - 1,
-      status: state.secondsRemaining === 0 ? "finnished" : state.status,
-    }),
-  }[action.type]?.(action.payload) || state);
+const renderContent = (state, dispatch) =>
+  ({ loading, error, ready, active, finnished }[state.status]?.(
+    state,
+    dispatch
+  ) || null);
 
 export default function App() {
-  const [
-    { questions, status, index, answer, points, highScore, secondsRemaining },
-    dispatch,
-  ] = useReducer(reducer, initialState);
-
-  const numQuestions = questions.length;
-  const maxPossiblePoints = questions.reduce(
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const numQuestions = state.questions.length;
+  const maxPossiblePoints = state.questions.reduce(
     (prev, curr) => prev + curr.points,
     0
   );
@@ -93,47 +42,10 @@ export default function App() {
       <div className="app">
         <Header />
         <Main>
-          {{
-            loading: <Loader />,
-            error: <Error />,
-            ready: <StartScreen {...{ numQuestions }} dispatch={dispatch} />,
-            active: (
-              <>
-                <Progress
-                  {...{
-                    index,
-                    numQuestions,
-                    points,
-                    maxPossiblePoints,
-                    answer,
-                  }}
-                />
-                {questions[index] && (
-                  <Question
-                    question={questions[index]}
-                    dispatch={dispatch}
-                    answer={answer}
-                  />
-                )}
-                <NextButton
-                  {...{
-                    dispatch,
-                    answer,
-                    index,
-                    numQuestions,
-                  }}
-                />
-                <Footer>
-                  <Timer {...{ dispatch, secondsRemaining }} />
-                </Footer>
-              </>
-            ),
-            finnished: (
-              <FinnishScreen
-                {...{ points, maxPossiblePoints, highScore, dispatch }}
-              />
-            ),
-          }[status] || null}
+          {renderContent(
+            { ...state, numQuestions, maxPossiblePoints },
+            dispatch
+          )}
         </Main>
       </div>
     </div>
