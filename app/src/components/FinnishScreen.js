@@ -1,4 +1,4 @@
-const FinnishScreen = ({ points, maxPossiblePoints, highScore }) => {
+const FinnishScreen = ({ points, maxPossiblePoints, highScore, dispatch }) => {
   const percentage = (points / maxPossiblePoints) * 100;
   return (
     <>
@@ -7,6 +7,12 @@ const FinnishScreen = ({ points, maxPossiblePoints, highScore }) => {
         {percentage.toFixed(2)}%)
       </p>
       <p className="highscore">(highScore: {highScore} points)</p>
+      <button
+        className="btn btn-ui"
+        onClick={() => dispatch({ type: "restart" })}
+      >
+        Restart Quiz
+      </button>
     </>
   );
 };

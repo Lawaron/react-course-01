@@ -45,6 +45,11 @@ const reducer = (state, action) =>
       status: "finnished",
       highScore: Math.max(state.points, state.highScore),
     }),
+    restart: () => ({
+      ...initialState,
+      questions: state.questions,
+      status: "ready",
+    }),
   }[action.type]?.(action.payload) || state);
 
 export default function App() {
@@ -105,7 +110,9 @@ export default function App() {
               </>
             ),
             finnished: (
-              <FinnishScreen {...{ points, maxPossiblePoints, highScore }} />
+              <FinnishScreen
+                {...{ points, maxPossiblePoints, highScore, dispatch }}
+              />
             ),
           }[status] || null}
         </Main>
