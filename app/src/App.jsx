@@ -2,13 +2,20 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Product from "./pages/Product";
 import Pricing from "./pages/Pricing";
 import Homepage from "./pages/Homepage";
+import PageNotFound from "./pages/PageNotFound";
 
 const App = () => (
-  <BrowserRouter>
+  <BrowserRouter
+    future={{
+      v7_startTransition: true,
+      v7_relativeSplatPath: true,
+    }}
+  >
     <Routes>
       <Route path="/" element={<Homepage />} />
       <Route path="product" element={<Product />} />
       <Route path="pricing" element={<Pricing />} />
+      <Route path="*" element={<PageNotFound />} />
     </Routes>
   </BrowserRouter>
 );
