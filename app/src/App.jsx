@@ -1,7 +1,9 @@
 import {
   BrowserRouter,
+  Navigate,
   Route,
   Routes,
+  useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
@@ -11,11 +13,10 @@ import Homepage from "./pages/Homepage/Homepage";
 import PageNotFound from "./pages/Error/PageNotFound";
 import Login from "./pages/Login/Login";
 
-// @Todo learn programmatic navigation useNavigation + <Navigate />
-
 const NestedCity = () => {
   const { name } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   return (
     <>
       <p>
@@ -29,6 +30,13 @@ const NestedCity = () => {
         }}
       >
         Refresh info
+      </button>
+      <button
+        onClick={() => {
+          navigate("/pricing/countries");
+        }}
+      >
+        To countries
       </button>
     </>
   );
@@ -44,7 +52,8 @@ const App = () => (
     <Routes>
       <Route path="/" element={<Homepage />} />
       <Route path="pricing" element={<Pricing />}>
-        <Route index element={<p>Select an option</p>} />
+        {/* <Route index element={<p>Select an option</p>} /> */}
+        <Route index element={<Navigate replace to="cities" />} />
         <Route path="cities" element={<p>City list</p>} />
         <Route path="cities/:name" element={<NestedCity />} />
         <Route path="countries" element={<p>Countries list</p>} />
